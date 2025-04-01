@@ -1,10 +1,13 @@
+protobuf==3.20.3
 beautifulsoup4==4.13.3
 fastapi==0.115.11
 fuzzywuzzy==0.18.0
 ipython==8.12.3
-numpy==2.2.3
+google-cloud-storage
+numpy
+python-multipart
 paddleocr==2.9.1
-paddleocr.egg==info
+paddlepaddle
 pandas==2.2.3
 Requests==2.32.3
 tqdm==4.66.4
