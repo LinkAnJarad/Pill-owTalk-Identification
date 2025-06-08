@@ -298,8 +298,8 @@ def match_with_rx(match_string):
     matches, scores = zip(*sorted(zip(matches, scores), key=lambda x: x[1], reverse=True))
     return matches, scores
 
-def get_info(match_string, limit=3):
-    fda_matches, fda_scores = match_with_fda_hierarchical(match_string=match_string)
+def get_info(match_string, limit=3, threshold=70):
+    fda_matches, fda_scores = match_with_fda_hierarchical(match_string=match_string, threshold=threshold)
     matches = []
 
     for match, score in zip(fda_matches[:limit], fda_scores[:limit]):
