@@ -130,16 +130,20 @@ def get_pill_info(drug_name):
 def get_info(image_path):
     image = preprocess_image(image_path)
     predictions, scores = predict(image)
-    pill_pred_info = {'matches': []}
+    pill_pred_info = {'matches': [], 'images': []}
     for p, s in zip(predictions, scores):
         pill_info = get_pill_info(p)
         if pill_info == 'Not Drug':
             continue
         pill_info['Score'] = s
-        pill_pred_info['matches'].append(pill_info)
+        
         matches, _ = match_with_rx(pill_info['Generic Name'])
         rx_info = dict(drugdata_df.iloc[matches[0]])
         pill_info['rx_info'] = rx_info
+
+        pill_pred_info['matches'].append(pill_info)
+
+        pill_pred_info['images'].append(f'/pill-images/{p}.jpg')
 
     return pill_pred_info
     

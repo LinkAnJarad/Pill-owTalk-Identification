@@ -1,11 +1,10 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 # from google.cloud import storage
-import json
-import medication_matching
+from fastapi.staticfiles import StaticFiles
 import pill_identification
 import math
-import ocr_module
+import package_identification
 import os
 import numpy as np
 
@@ -19,13 +18,16 @@ app = FastAPI()
 # storage_client = storage.Client()
 # bucket = storage_client.bucket(BUCKET_NAME)
 
+app.mount("/package-images", StaticFiles(directory="MedsForAll_Images"), name="package-images")
+app.mount("/pill-images", StaticFiles(directory="Pill Images Samples"), name="pill-images")
+
 @app.post("/upload-image/")
 async def upload_image(file: UploadFile = File(...)):
     # Define GCS file path
     # blob = bucket.blob(f"uploads/{file.filename}")
     
     # Upload file using upload_from_filename to preserve metadata
-    temp_path = f"/tmp/{file.filename}"  # Temporary local storage
+    temp_path = f"uploads/{file.filename}"  # Temporary local storage
     with open(temp_path, "wb") as buffer:
         buffer.write(await file.read())
     
@@ -37,11 +39,8 @@ async def upload_image(file: UploadFile = File(...)):
     # downloaded_path = f"/tmp/downloaded_{file.filename}"
     # blob.download_to_filename(downloaded_path)
 
-    # Perform OCR on the downloaded image
-    ocr_text = ocr_module.extract_image_text(image_path=temp_path)
-
     # Get medication info
-    med_info = medication_matching.get_info(ocr_text, threshold=60)
+    med_info = package_identification.get_info(temp_path)
     #med_info = json.dumps(med_info, default=str)
     #return {"file_url": file_url, "ocr_text": ocr_text, "med_info": med_info}
     def clean_med_info(data):
@@ -61,6 +60,8 @@ async def upload_image(file: UploadFile = File(...)):
         return data
 
     cleaned = clean_med_info(med_info)
+    os.remove(temp_path)
+
     return JSONResponse(content=cleaned)
 
 # def convert_numpy(obj):
@@ -78,7 +79,7 @@ async def upload_image(file: UploadFile = File(...)):
     # blob = bucket.blob(f"uploads/{file.filename}")
     
     # Upload file using upload_from_filename to preserve metadata
-    temp_path = f"/tmp/{file.filename}"  # Temporary local storage
+    temp_path = f"uploads/{file.filename}"  # Temporary local storage
     with open(temp_path, "wb") as buffer:
         buffer.write(await file.read())
     
@@ -110,6 +111,8 @@ async def upload_image(file: UploadFile = File(...)):
         return data
 
     cleaned = clean_med_info(med_info)
+    os.remove(temp_path)
+    
     return JSONResponse(content=cleaned)
 
 
