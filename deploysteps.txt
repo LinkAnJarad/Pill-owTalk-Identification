@@ -1,0 +1,13 @@
+gcloud auth login
+gcloud config set project resolute-casing-464009-s1
+
+gcloud services enable run.googleapis.com
+gcloud services enable artifactregistry.googleapis.com
+
+gcloud config set run/region asia-southeast1
+
+gcloud artifacts repositories create fastapi-repo --repository-format=docker --location=asia-southeast1
+
+gcloud builds submit --tag asia-southeast1-docker.pkg.dev/resolute-casing-464009-s1/fastapi-repo/fastapi-app
+
+gcloud run deploy fastapi-service --image asia-southeast1-docker.pkg.dev/resolute-casing-464009-s1/fastapi-repo/fastapi-app --memory 6Gi --cpu 2 --concurrency 1 --max-instances 1 --allow-unauthenticated --platform managed

@@ -113,7 +113,7 @@ def predict(image):
     pred_embedding, _ = model(preprocessed_image_tensor)
 
     scores = F.cosine_similarity(support_embeddings, pred_embedding)
-    top_values, top_indices = scores.topk(3)
+    top_values, top_indices = scores.topk(5)
     top_labels = [labels[i] for i in top_indices]
     top_predictions = [label_to_class[i] for i in top_labels]
     return top_predictions, [round(i, 2) for i in top_values.numpy().tolist()]
@@ -140,10 +140,11 @@ def get_info(image_path):
         matches, _ = match_with_rx(pill_info['Generic Name'])
         rx_info = dict(drugdata_df.iloc[matches[0]])
         pill_info['rx_info'] = rx_info
+        pill_info['image_url'] = f'/pill-images/{p}.jpg'
 
         pill_pred_info['matches'].append(pill_info)
 
-        pill_pred_info['images'].append(f'/pill-images/{p}.jpg')
+        #pill_pred_info['images'].append(f'/pill-images/{p}.jpg')
 
     return pill_pred_info
     
