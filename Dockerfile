@@ -14,6 +14,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN pip install --no-cache-dir google-cloud-secret-manager --no-deps
+
 # Copy the entire project (including CSV files)
 COPY . .
 

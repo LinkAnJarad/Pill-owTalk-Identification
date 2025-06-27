@@ -6,8 +6,17 @@ gcloud services enable artifactregistry.googleapis.com
 
 gcloud config set run/region asia-southeast1
 
-gcloud artifacts repositories create fastapi-repo --repository-format=docker --location=asia-southeast1
+docker build -t asia-southeast1-docker.pkg.dev/resolute-casing-464009-s1/fastapi-repo/fastapi-app .
+docker push asia-southeast1-docker.pkg.dev/resolute-casing-464009-s1/fastapi-repo/fastapi-app
 
-gcloud builds submit --tag asia-southeast1-docker.pkg.dev/resolute-casing-464009-s1/fastapi-repo/fastapi-app
+gcloud run deploy fastapi-app --image asia-southeast1-docker.pkg.dev/resolute-casing-464009-s1/fastapi-repo/fastapi-app --memory 6Gi --cpu 2 --concurrency 1 --max-instances 1 --service-account cloud-run-access@resolute-casing-464009-s1.iam.gserviceaccount.com --allow-unauthenticated --platform managed
 
-gcloud run deploy fastapi-service --image asia-southeast1-docker.pkg.dev/resolute-casing-464009-s1/fastapi-repo/fastapi-app --memory 6Gi --cpu 2 --concurrency 1 --max-instances 1 --allow-unauthenticated --platform managed
+
+gcloud iam service-accounts create cloud-run-access --display-name "Cloud Run Secret Access"
+
+gcloud projects add-iam-policy-binding resolute-casing-464009-s1 --member="serviceAccount:cloud-run-access@resolute-casing-464009-s1.iam.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"
+
+
+
+
+gcloud compute addresses create mongo-vm-ip --region=asia-southeast1

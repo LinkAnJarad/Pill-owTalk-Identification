@@ -14,9 +14,15 @@ from PIL import Image
 
 import pandas as pd
 
-fda_df = pd.read_csv('FDA_ALL.csv')
-drug_list = pd.read_csv("Medications List Clean.csv")
-drugdata_df = pd.read_csv('drug_data.csv')
+import mongo_conn
+
+fda_df = mongo_conn.fda_df
+drug_list = mongo_conn.drug_list
+drugdata_df = mongo_conn.drugdata_df
+
+# fda_df = pd.read_csv('FDA_ALL.csv')
+# drug_list = pd.read_csv("Medications List Clean.csv")
+# drugdata_df = pd.read_csv('drug_data.csv')
 
 with open('pill_model/traintestsplit.pkl', 'rb') as splits:
     traintestsplit = pickle.load(splits)

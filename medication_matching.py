@@ -194,6 +194,12 @@ fda_df = pd.read_csv('FDA_ALL.csv')
 rx_df = pd.read_csv('RX_ALL.csv')
 drugdata_df = pd.read_csv('drug_data.csv')
 
+import mongo_conn
+
+fda_df = mongo_conn.fda_df
+rx_df = mongo_conn.rx_df
+drugdata_df = mongo_conn.drugdata_df
+
 
 def match_with_fda(match_string, category=None, indexes=None):
     matches = []
